@@ -1,0 +1,37 @@
+[server]
+# username for running the daemon
+username = 
+# hostname. set it to a FQDN in order to be reached from outside
+host = 0.0.0.0
+# ports
+electrum_rpc_port = 8003
+stratum_tcp_port = 50002
+#stratum_tcp_ssl_port = 50003
+#report_host = 
+#report_stratum_tcp_port = 50002
+#report_stratum_tcp_ssl_port = 50003
+password = secret
+banner = Welcome to Electrum!
+banner_file = /etc/electrum-capricoin.banner
+irc = yes
+irc_nick = capricoin
+#ssl_certfile = /path/to/electrum-capricoin-server.crt
+#ssl_keyfile = /path/to/electrum-capricoin-server.key
+logfile = /var/log/electrum-capricoin.log
+donation_address = 
+
+# default backend is leveldb (pruning server)
+backend = leveldb
+
+[leveldb]
+# path to your database
+path = 
+# for each address, history will be pruned if it is longer than this limit
+pruning_limit = 1000
+
+[capricoind]
+capricoind_host = localhost
+capricoind_port = 22713
+# user and password from capricoin.conf
+capricoind_user = 
+capricoind_password = 
