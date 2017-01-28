@@ -32,11 +32,11 @@ fi
 # read username
 user=$(read_config "username")
 if ! [ "$user" ]; then
-    read -p "username for running daemon (default: electrum) " -r
+    read -p "username for running daemon (default: capricoin) " -r
     if [ $REPLY ]; then
 	user=$REPLY
     else
-	user="electrum"
+	user="capricoin"
     fi 
     write_config "username" $user
 fi
@@ -55,11 +55,17 @@ fi
 default_path="/var/electrum-capricoin-server"
 path=$(read_config "path")
 if ! [ "$path" ]; then
-    read -p "Path for database (default: $default_path) " -r
+    read -p "Path for database (default: $default_path), press enter for default: " -r
     if [ $REPLY ]; then
 	path=$REPLY
+	mkdir -p $path
+	chown -R $user:$user $path
+	echo "Selected $REPLY"
     else
-	mkdir $default_path
+	path=$default_path
+	mkdir -p $path
+	chown -R $user:$user $path
+	echo "Selected $default_path"
     fi 
     write_config "path" $default_path
 fi
@@ -68,26 +74,26 @@ fi
 default_logfile="/var/log/electrum-capricoin.log"
 logfile=$(read_config "logfile")
 if ! [ "$logfile" ]; then
-    read -p "Path of logfile (default: $default_logfile) " -r
+    read -p "Path of logfile (default: $default_logfile) press enter for default: " -r
     if [ $REPLY ]; then
-	logfile=$REPLY	
+	logfile=$REPLY
+	touch $logfile
+	chown $user:$user $logfile
+	echo "Selected $REPLY"
     else
 	logfile=$default_logfile
+	touch $logfile
+	chown $user:$user $logfile
+	echo "Selected $default_logfile"
     fi 
     write_config "logfile" $default_logfile
-fi
-
-
-# remove directory if it exists and is empty
-if [ -d $path ]; then
-    rmdir $path --ignore-fail-on-non-empty
 fi
 
 
 # download database
 if [ ! -d $path ]; then
     echo "Database not found in $path."
-    read -p "Do you want to download it from the Electrum foundry to $path ? " -n 1 -r
+    read -p "Do you want to download it from the capricoin Electrum foundry to $path ? " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
 	mkdir -p $path
@@ -95,16 +101,6 @@ if [ ! -d $path ]; then
     fi
 fi
 
-# set owner
-chown -R $user:$user $path
-
-
-# create log file
-logfile=$(read_config "logfile")
-if ! [ -f $logfile ]; then
-    touch $logfile
-fi
-chown $user:$user $logfile
 
 
 capricoind_user=$(read_config "capricoind_user")
